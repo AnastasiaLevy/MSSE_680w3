@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Model1" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+  <EntityContainer Name="Model1Container" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="People" EntityType="Model1.Person" />
+    <EntitySet Name="Pictures" EntityType="Model1.Picture" />
+    <AssociationSet Name="PicturePerson" Association="Model1.PicturePerson">
+      <End Role="Picture" EntitySet="Pictures" />
+      <End Role="Person" EntitySet="People" />
+    </AssociationSet>
+    <EntitySet Name="Labs" EntityType="Model1.Lab" />
+    <AssociationSet Name="LabPerson" Association="Model1.LabPerson">
+      <End Role="Lab" EntitySet="Labs" />
+      <End Role="Person" EntitySet="People" />
+    </AssociationSet>
+    <EntitySet Name="Grades" EntityType="Model1.Grades" />
+    <AssociationSet Name="GradesPerson" Association="Model1.GradesPerson">
+      <End Role="Grades" EntitySet="Grades" />
+      <End Role="Person" EntitySet="People" />
+    </AssociationSet>
+    <EntitySet Name="Activities" EntityType="Model1.Activity" />
+    <AssociationSet Name="ActivityGrades" Association="Model1.ActivityGrades">
+      <End Role="Activity" EntitySet="Activities" />
+      <End Role="Grades" EntitySet="Grades" />
+    </AssociationSet>
+    <EntitySet Name="Schedules" EntityType="Model1.Schedule" />
+    <AssociationSet Name="ScheduleActivity" Association="Model1.ScheduleActivity">
+      <End Role="Schedule" EntitySet="Schedules" />
+      <End Role="Activity" EntitySet="Activities" />
+    </AssociationSet>
+    <AssociationSet Name="ScheduleLab" Association="Model1.ScheduleLab">
+      <End Role="Schedule" EntitySet="Schedules" />
+      <End Role="Lab" EntitySet="Labs" />
+    </AssociationSet>
+    <EntitySet Name="ClassFiles" EntityType="Model1.ClassFile" />
+    <AssociationSet Name="ClassFileActivity" Association="Model1.ClassFileActivity">
+      <End Role="ClassFile" EntitySet="ClassFiles" />
+      <End Role="Activity" EntitySet="Activities" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Person">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="FirstName" Nullable="true" />
+    <Property Type="String" Name="LastName" Nullable="true" />
+    <Property Type="String" Name="Username" Nullable="true" />
+    <Property Type="String" Name="Password" Nullable="true" />
+    <NavigationProperty Name="Pictures" Relationship="Model1.PicturePerson" FromRole="Person" ToRole="Picture" />
+    <Property Type="Int32" Name="PictureID" Nullable="false" />
+    <NavigationProperty Name="Lab" Relationship="Model1.LabPerson" FromRole="Person" ToRole="Lab" />
+    <Property Type="Int32" Name="LabId" Nullable="false" />
+    <NavigationProperty Name="Grades" Relationship="Model1.GradesPerson" FromRole="Person" ToRole="Grades" />
+    <Property Type="Int32" Name="ClassID" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Picture">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="PictureFile" Nullable="true" />
+    <NavigationProperty Name="Person" Relationship="Model1.PicturePerson" FromRole="Picture" ToRole="Person" />
+    <Property Type="Int32" Name="PersonId" Nullable="false" />
+  </EntityType>
+  <Association Name="PicturePerson">
+    <End Type="Model1.Picture" Role="Picture" Multiplicity="*" />
+    <End Type="Model1.Person" Role="Person" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Picture">
+        <PropertyRef Name="PersonId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Lab">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <NavigationProperty Name="People" Relationship="Model1.LabPerson" FromRole="Lab" ToRole="Person" />
+    <Property Type="String" Name="PersonID" Nullable="false" />
+    <Property Type="String" Name="ClassID" Nullable="false" />
+    <NavigationProperty Name="Schedule" Relationship="Model1.ScheduleLab" FromRole="Lab" ToRole="Schedule" />
+    <Property Type="Int32" Name="ScheduleId" Nullable="false" />
+  </EntityType>
+  <Association Name="LabPerson">
+    <End Type="Model1.Lab" Role="Lab" Multiplicity="1" />
+    <End Type="Model1.Person" Role="Person" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Lab">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Person">
+        <PropertyRef Name="LabId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Grades">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="Int32" Name="Value" Nullable="true" ConcurrencyMode="None" />
+    <NavigationProperty Name="Person" Relationship="Model1.GradesPerson" FromRole="Grades" ToRole="Person" />
+    <Property Type="Int32" Name="PersonId" Nullable="false" />
+    <NavigationProperty Name="Activity" Relationship="Model1.ActivityGrades" FromRole="Grades" ToRole="Activity" />
+    <Property Type="Int32" Name="ActivityId" Nullable="false" />
+  </EntityType>
+  <Association Name="GradesPerson">
+    <End Type="Model1.Grades" Role="Grades" Multiplicity="*" />
+    <End Type="Model1.Person" Role="Person" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Grades">
+        <PropertyRef Name="PersonId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Activity">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="Name" Nullable="true" />
+    <NavigationProperty Name="Grades" Relationship="Model1.ActivityGrades" FromRole="Activity" ToRole="Grades" />
+    <NavigationProperty Name="Schedule" Relationship="Model1.ScheduleActivity" FromRole="Activity" ToRole="Schedule" />
+    <Property Type="Int32" Name="ScheduleId" Nullable="false" />
+    <NavigationProperty Name="ClassFile" Relationship="Model1.ClassFileActivity" FromRole="Activity" ToRole="ClassFile" />
+    <Property Type="Int32" Name="ClassFileId" Nullable="false" />
+  </EntityType>
+  <Association Name="ActivityGrades">
+    <End Type="Model1.Activity" Role="Activity" Multiplicity="1" />
+    <End Type="Model1.Grades" Role="Grades" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Activity">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Grades">
+        <PropertyRef Name="ActivityId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Schedule">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="DayoftheWeek" Nullable="true" />
+    <Property Type="String" Name="Time" Nullable="true" />
+    <NavigationProperty Name="Activities" Relationship="Model1.ScheduleActivity" FromRole="Schedule" ToRole="Activity" />
+    <NavigationProperty Name="Labs" Relationship="Model1.ScheduleLab" FromRole="Schedule" ToRole="Lab" />
+  </EntityType>
+  <Association Name="ScheduleActivity">
+    <End Type="Model1.Schedule" Role="Schedule" Multiplicity="1" />
+    <End Type="Model1.Activity" Role="Activity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Schedule">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Activity">
+        <PropertyRef Name="ScheduleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ScheduleLab">
+    <End Type="Model1.Schedule" Role="Schedule" Multiplicity="1" />
+    <End Type="Model1.Lab" Role="Lab" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Schedule">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Lab">
+        <PropertyRef Name="ScheduleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="ClassFile">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="File" Nullable="false" />
+    <NavigationProperty Name="Activities" Relationship="Model1.ClassFileActivity" FromRole="ClassFile" ToRole="Activity" />
+  </EntityType>
+  <Association Name="ClassFileActivity">
+    <End Type="Model1.ClassFile" Role="ClassFile" Multiplicity="1" />
+    <End Type="Model1.Activity" Role="Activity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ClassFile">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Activity">
+        <PropertyRef Name="ClassFileId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
